@@ -1,9 +1,10 @@
 {
-  "dependencies": {
-    "mongoose": "^3.8.17",
-    "restify": "^2.8.3"
+  "dependencies" : {
+    "mongoose" : "^3.8.17",
+    "express" : "^4.0",
+    "body-parser" : "^1.9.2"
   },
-  "devDependencies": {
-    "nodemon": "^1.2.1"
+  "devDependencies" : {
+    "nodemon" : "^1.2.1"
   }
 }

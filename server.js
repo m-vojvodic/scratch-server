@@ -1,39 +1,46 @@
 var mongoose = require('mongoose'),
-	restify = require('restify'),
-	restify.createServer();
+    express = require('express'),
+    bodyParser = require('body-parser'),
+    app = express(),
+    port = process.env.PORT || 3000,
+    router = express.Router(),
+    djRoutes = require('./routes/dj.js'),
+    trackRoutes = require('./routes/track.js');
 
 mongoose.connect('mongodb://localhost/scratch');
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function callback () {
-  console.log('yay!');
+  console.log('Server connected to MongoDB');
 });
 
-connectToDB();
-server.use(restify.bodyParser());
+app.use(bodyParser.json());
 
-// This runs before anything:
-server.pre(function(req, res, next) {
-    res.setHeader('content-type', 'application/json');
-    return next();
+router.get('/', function(req, res) {
+    res.json({ message : 'Welcome to Scratch API!' });
 });
-
-// routes
-var Dj = require('./routes/dj.js');
-var Track = require('./routes/track.js');
 
 // DJ routes
-server.post('/dj', Dj.createDj);
-server.get('/dj', Dj.retrieveDj);
-server.delete('/dj:track_id', Dj.deleteTrack);
-server.delete('/dj', Dj.deleteDj);
+router.route('/dj')
+    .post(djRoutes.createDj)
+    .delete(djRoutes.deleteDj);
+
+router.route('/dj/:dj_id')
+    .get(djRoutes.retrieveDj);
+
+router.route('/dj/:track_id')
+    .delete(djRoutes.deleteTrack);
 
 // Track routes
-server.post('/track', Track.createTrack);
-server.get('/track', Track.retrieveTracks);
-server.put('/track', Track.updateTracks);
+router.route('/track')
+    .post(trackRoutes.createTrack)
+    .put(trackRoutes.updateTracks);
 
-server.listen(3000, 'localhost', function() {
-	console.log('%s is listening at %s on port %d', server.name, server.url, server.port);
-});
+router.route('/track/:dj_id')
+    .get(trackRoutes.retrieveTracks);
+
+app.use('/', router);
+
+app.listen(port);
+console.log('Server listening on port: %s', port);

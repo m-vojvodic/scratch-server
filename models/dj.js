@@ -1,8 +1,8 @@
 var mongoose = require('mongoose');
 
 var djSchema = mongoose.Schema({
-    dj_id : { type: Number, required: true }
+    dj_id : { type: Number }
 }),
-    Dj = mongoose.model(Dj, 'djSchema');
+    Dj = mongoose.model('Dj', djSchema);
 
-module.exports(Dj);
+module.exports = Dj;
